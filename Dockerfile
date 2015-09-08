@@ -29,4 +29,4 @@ RUN /usr/bin/hawkular-agent-install.sh
 
 EXPOSE 9990
 
-CMD ["/bin/bash", "/usr/bin/hawkular-agent-start.sh"] 
+CMD ["/bin/bash", "/usr/bin/wildfly-start.sh"] 
