@@ -2,5 +2,5 @@ export REPO_URL=https://repository.jboss.org/nexus/content/groups/public-jboss/
 export AGENT_VERSION=0.5.0.Final
 ARTIFACT_ID=hawkular-monitor
 export ARTIFACT=org.hawkular.agent:${ARTIFACT_ID}:${AGENT_VERSION}:zip:module
-export DOCKER_TAG=hawkular/hawkular-wildfly-agent:latest
+export DOCKER_TAG=hawkular/wildfly-monitoring-agent:latest
 export PAYLOAD=${ARTIFACT_ID}.zip

@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2015 Red Hat, Inc. and/or its affiliates
 # and other contributors as indicated by the @author tags.
@@ -15,17 +16,12 @@
 # limitations under the License.
 #
 
-FROM jboss/wildfly:latest
+/opt/jboss/wildfly/bin/add-user.sh admin `cat < /etc/.secret` --silent
 
-USER root
+. /etc/build-env
+LAYERS_DIR=${JBOSS_HOME}/modules/system/layers/base
+ZIP_FILE=${LAYERS_DIR}/${PAYLOAD}
+unzip -qq -d ${LAYERS_DIR} ${ZIP_FILE} &&\
+rm -f ${ZIP_FILE}
 
-ADD build-env /etc/build-env
-ADD output/${PAY_LOAD} $JBOSS_HOME/modules/system/layers/base
-ADD hawkular-agent-install.sh wildfly-start.sh /usr/bin/
-ADD agent.xsl .secret /etc/
-
-RUN /usr/bin/hawkular-agent-install.sh
-
-EXPOSE 9990
-
-CMD ["/bin/bash", "/usr/bin/wildfly-start.sh"] 
+exit $?

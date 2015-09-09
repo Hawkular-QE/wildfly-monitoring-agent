@@ -16,10 +16,20 @@
 # limitations under the License.
 #
 
-. /etc/build-env
-LAYERS_DIR=${JBOSS_HOME}/modules/system/layers/base
-ZIP_FILE=${LAYERS_DIR}/${PAYLOAD}
-unzip -qq -d ${LAYERS_DIR} ${ZIP_FILE} &&\
-rm -f ${ZIP_FILE}
+if [ -z ${WF_AGENT} ]; then
+   echo "Missing WF_AGENT env variable"
+   exit 1
+fi
 
-exit $?
+if [ -z ${WF_AGENT_PORT} ]; then
+   echo "Missing WF_AGENT_PORT env variable"
+   exit 1
+fi
+
+docker exec hawkular /opt/hawkular-live/bin/jboss-cli.sh --connect <<EOF
+batch
+/subsystem=hawkular-monitor/managed-servers=default/remote-dmr=wf2/:add(host=${WF_AGENT},port=${WF_AGENT_PORT},enabled=true,password=`cat .secret`,resourceTypeSets="Main,Deployment,Web Component,EJB,Datasource,Transaction Manager",username=admin)
+/subsystem=hawkular-monitor/:start(restart=true)
+run-batch
+exit
+EOF

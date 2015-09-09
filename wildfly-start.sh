@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-if [ -z ${HAWKULAR_SERVER} ]; then
+if [ -z "${HAWKULAR_SERVER}" ]; then
    HAWKULAR_SERVER="localhost"
    echo "Warning: HAWKULAR_SERVER not specified, using localhost"
 fi
@@ -25,6 +25,7 @@ CONFIG_DIR=/opt/jboss/wildfly/standalone/configuration
 xsltproc --output $CONFIG_DIR/standalone-tmp.xml \
          --stringparam username jdoe --stringparam password password \
          --stringparam hawkular_server ${HAWKULAR_SERVER} \
+         --stringparam hawkular_port ${HAWKULAR_PORT} \
           /etc/agent.xsl $CONFIG_DIR/standalone.xml  
 
 cp -b $CONFIG_DIR/standalone-tmp.xml $CONFIG_DIR/standalone.xml
