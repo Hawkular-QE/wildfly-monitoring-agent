@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015 Red Hat, Inc. and/or its affiliates
+# Copyright 2016 Red Hat, Inc. and/or its affiliates
 # and other contributors as indicated by the @author tags.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ mvn org.apache.maven.plugins:maven-dependency-plugin:2.10:copy\
   -DoutputDirectory=output\
   -Dmdep.stripVersion=true\
   -Dmdep.stripClassifier=true &&\
-  echo "## Docker build" &&\
-  docker build --force-rm=true --no-cache=true --rm=true --tag=${DOCKER_TAG} .
- 
+echo "## Docker build ##" &&\
+docker build --force-rm=true --no-cache=true --rm=true --tag=${DOCKER_TAG} .
+
 exit $?
