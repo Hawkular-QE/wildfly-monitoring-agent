@@ -1,5 +1,5 @@
 #
-# Copyright 2015 Red Hat, Inc. and/or its affiliates
+# Copyright 2016 Red Hat, Inc. and/or its affiliates
 # and other contributors as indicated by the @author tags.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,13 @@
 
 FROM jboss/wildfly:latest
 
+ADD build-env .secret $JBOSS_HOME/
+ADD output/${PAYLOAD} $JBOSS_HOME/
+ADD wildfly-start.sh /usr/bin/
+
 USER root
-
-ADD build-env /etc/build-env
-ADD output/${PAY_LOAD} $JBOSS_HOME/modules/system/layers/base
-ADD hawkular-agent-install.sh wildfly-start.sh /usr/bin/
-ADD agent.xsl .secret /etc/
-
-RUN /usr/bin/hawkular-agent-install.sh
+RUN chown jboss:jboss ${JBOSS_HOME}/.secret
+USER jboss
 
 EXPOSE 9990
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015 Red Hat, Inc. and/or its affiliates
+# Copyright 2016 Red Hat, Inc. and/or its affiliates
 # and other contributors as indicated by the @author tags.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +21,16 @@ if [ -z "${HAWKULAR_SERVER}" ]; then
    echo "Warning: HAWKULAR_SERVER not specified, using localhost"
 fi
 
-CONFIG_DIR=/opt/jboss/wildfly/standalone/configuration
-xsltproc --output $CONFIG_DIR/standalone-tmp.xml \
-         --stringparam username jdoe --stringparam password password \
-         --stringparam hawkular_server ${HAWKULAR_SERVER} \
-         --stringparam hawkular_port ${HAWKULAR_PORT} \
-          /etc/agent.xsl $CONFIG_DIR/standalone.xml  
+echo "## Registering with HAWKULAR_SERVER: ${HAWKULAR_SERVER} ##"
 
-cp -b $CONFIG_DIR/standalone-tmp.xml $CONFIG_DIR/standalone.xml
+. ${JBOSS_HOME}/build-env
+
+${JBOSS_HOME}/bin/add-user.sh admin `cat < ${JBOSS_HOME}/.secret` --silent
+
+java -jar ${JBOSS_HOME}/${PAYLOAD} \
+             --target-location ${JBOSS_HOME} \
+             --server-url ${HAWKULAR_SERVER} \
+             --module-dist classpath:hawkular-wildfly-agent-wf-extension.zip
 
 /opt/jboss/wildfly/bin/standalone.sh  -b 0.0.0.0 -bmanagement 0.0.0.0
 
