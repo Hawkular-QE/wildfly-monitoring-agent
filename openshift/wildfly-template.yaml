@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: wildfly-hawkular-agent
+metadata:
+  annotations:
+    description: Wildfly with Hawkular agent
+    iconClass: icon-app-code
+    tags: instant-app,quickstart,wildfly,hawkular
+  name: wildfly-hawkular-agent
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Exposes and load balances the application pods
+    name: ${NAME}
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      targetPort: 8080
+    - name: management
+      port: 9990
+      targetPort: 9990
+    selector:
+      name: ${NAME}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${NAME}-management
+  spec:
+    to:
+      kind: Service
+      name: ${NAME}
+    port:
+      targetPort: management
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${NAME}-web
+  spec:
+    to:
+      kind: Service
+      name: ${NAME}
+    port:
+      targetPort: web
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Defines how to deploy the application server
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      name: ${NAME}
+    strategy:
+      type: Rolling
+      rollingParams:
+         timeoutSeconds: 180
+    template:
+      metadata:
+        labels:
+          name: ${NAME}
+        name: ${NAME}
+      spec:
+       containers:
+        - image: docker.io/hawkular/wildfly-monitoring-agent:latest
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 3
+          name: ${NAME}
+          ports:
+          - containerPort: 8080
+          - containerPort: 9990
+          env:
+          - 
+            name: HAWKULAR_SERVER
+            value: ${HAWKULAR_SERVER}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 3
+          resources:
+            limits:
+              memory: ${MEMORY_LIMIT}
+parameters:
+- description: The name assigned to all of the frontend objects defined in this template.
+  displayName: Name
+  name: NAME
+  required: true
+  value: wildfly-hawkular
+- description: Maximum amount of memory the container can use.
+  displayName: Memory Limit
+  name: MEMORY_LIMIT
+  value: 1024Mi
+- description: Hawkular Server URL
+  displayName: HAWKULAR SERVER
+  name: HAWKULAR_SERVER
+  value: http://livingontheedge.hawkular.org
+  required: true
