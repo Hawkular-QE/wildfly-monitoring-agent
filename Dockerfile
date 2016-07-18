@@ -22,7 +22,8 @@ ADD output/${PAYLOAD} $JBOSS_HOME/
 ADD wildfly-start.sh /usr/bin/
 
 USER root
-RUN chown jboss:jboss ${JBOSS_HOME}/.secret
+RUN chown jboss:jboss ${JBOSS_HOME}/.secret \ 
+    ${JBOSS_HOME}/domain/configuration/mgmt-users.properties
 USER jboss
 
 EXPOSE 9990
