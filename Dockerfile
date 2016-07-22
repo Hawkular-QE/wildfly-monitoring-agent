@@ -19,12 +19,12 @@ FROM jboss/wildfly:latest
 
 ADD build-env .secret $JBOSS_HOME/
 ADD output/${PAYLOAD} $JBOSS_HOME/
-ADD wildfly-start.sh /usr/bin/
+ADD wildfly-start.sh $JBOSS_HOME/
 
 USER root
-RUN chown jboss:jboss ${JBOSS_HOME}/.secret
-USER jboss
+RUN chgrp -R 0 $JBOSS_HOME &&\
+    chmod -R g+rw $JBOSS_HOME
 
 EXPOSE 9990
 
-CMD ["/bin/bash", "/usr/bin/wildfly-start.sh"] 
+CMD ["/bin/bash", "/opt/jboss/wildfly/wildfly-start.sh"] 
