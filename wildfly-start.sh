@@ -25,6 +25,7 @@ echo "## Registering with HAWKULAR_SERVER: ${HAWKULAR_SERVER} ##"
 
 . ${JBOSS_HOME}/build-env
 
+echo "## Creating users ##"
 ${JBOSS_HOME}/bin/add-user.sh admin `cat < ${JBOSS_HOME}/.secret` --silent
 
 java -jar ${JBOSS_HOME}/${PAYLOAD} \
