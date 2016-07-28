@@ -30,7 +30,8 @@ ${JBOSS_HOME}/bin/add-user.sh admin `cat < ${JBOSS_HOME}/.secret` --silent
 java -jar ${JBOSS_HOME}/${PAYLOAD} \
              --target-location ${JBOSS_HOME} \
              --server-url ${HAWKULAR_SERVER} \
-             --module-dist classpath:hawkular-wildfly-agent-wf-extension.zip
+             --module-dist classpath:hawkular-wildfly-agent-wf-extension.zip \
+             --username jdoe --password=password
 
 /opt/jboss/wildfly/bin/standalone.sh  -b 0.0.0.0 -bmanagement 0.0.0.0
 
