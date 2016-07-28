@@ -1,4 +1,4 @@
-export AGENT_VERSION=0.17.5.Final
+export AGENT_VERSION=0.19.2.Final
 export REPO_URL=https://repository.jboss.org/nexus/content/groups/public-jboss/
 ARTIFACT_ID=hawkular-wildfly-agent-installer-full
 export ARTIFACT=org.hawkular.agent:${ARTIFACT_ID}:${AGENT_VERSION}:jar
